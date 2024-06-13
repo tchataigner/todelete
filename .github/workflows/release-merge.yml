@@ -1,0 +1,46 @@
+name: Release PR Merged
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches:
+      - dev
+
+jobs:
+  # Creates a new tag if a release branch is merged
+  tag-release:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: get-version
+        run: |
+          VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d'/' -f 2)
+          echo "name=version::${VERSION}" | tee -a $GITHUB_OUTPUT
+
+
+      - name: Push tag
+        uses: laputansoft/github-tag-action@v4.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_sha: ${{ github.event.pull_request.merge_commit_sha }}
+          tag: ${{ steps.get-version.outputs.version }}
+
+
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v4
+        with:
+          fromTag: ''
+          toTag: ${{ steps.get-version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
+        with:
+          body: ${{steps.github_release.outputs.changelog}}
