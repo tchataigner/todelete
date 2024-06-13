@@ -69,5 +69,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "Release ${{ github.event.inputs.version }}"
-          branch: "release/${{ github.event.inputs.version }}"
           base: "dev"
