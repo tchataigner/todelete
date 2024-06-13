@@ -29,3 +29,17 @@ jobs:
           tag: ${{ steps.get-version.outputs.version }}
           commit_sha: ${{ github.event.pull_request.merge_commit_sha }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v4
+        with:
+          fromTag: ''
+          toTag: ${{ steps.get-version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{steps.github_release.outputs.changelog}}
