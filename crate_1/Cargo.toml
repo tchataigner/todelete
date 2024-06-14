@@ -1,6 +1,6 @@
 [package]
 name = "crate_1"
-version = "88.8.0"
+version = "88.8.1"
 edition = "2021"
 
 [dependencies]
