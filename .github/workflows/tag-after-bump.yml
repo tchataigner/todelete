@@ -40,7 +40,7 @@ jobs:
           fi
 
           git tag -a $VERSION -m "$VERSION" origin/$RELEASE_BRANCH
-          git push origin $VERSION -f
+          git push origin $VERSION --follow-tags
           echo "version=$VERSION" | tee -a "$GITHUB_OUTPUT"
           echo "RELEASE_BRANCH=$RELEASE_BRANCH" | tee -a "$GITHUB_ENV"
 
