@@ -35,7 +35,7 @@ jobs:
           VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d'/' -f 2)
           RELEASE_BRANCH="${{ startsWith(github.event.pull_request.head.ref, 'release/') && github.event.pull_request.head.ref || github.event.pull_request.base.ref }}"
 
-          git tag -a $VERSION -m "$VERSION" $RELEASE_BRANCH
+          git tag -a $VERSION -m "$VERSION" origin/$RELEASE_BRANCH
           git push origin $VERSION -f
           echo "version=$VERSION" | tee -a "$GITHUB_OUTPUT"
           echo "RELEASE_BRANCH=$RELEASE_BRANCH" | tee -a "$GITHUB_ENV"
