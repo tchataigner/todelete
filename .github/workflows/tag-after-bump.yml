@@ -32,7 +32,7 @@ jobs:
       - name: Get version
         id: get-version
         run: |
-          VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d'/' -f 2 | cut -d'-' -f 2)
+          VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d'/' -f 2)
           RELEASE_BRANCH="${{ startsWith(github.event.pull_request.head.ref, 'release/') && github.event.pull_request.head.ref || github.event.pull_request.base.ref }}"
 
           if [[ "${{ startsWith(github.event.pull_request.head.ref, 'release/') }}" == "true" ]]; then
