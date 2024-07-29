@@ -1,5 +1,6 @@
+[workspace]
 [package]
-name = "crate_2"
+name = "committee-change"
 version = "0.1.0"
 edition = "2021"
 

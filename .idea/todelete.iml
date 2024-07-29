@@ -4,6 +4,18 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/crate_1/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crate_2/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/aptos/mine/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/aptos/programs/epoch-change/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/aptos/programs/inclusion/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ethereum/programs/committee-change/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ethereum/programs/inclusion/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ethereum/yours/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/aptos/programs/epoch-change/target" />
+      <excludeFolder url="file://$MODULE_DIR$/aptos/programs/inclusion/target" />
+      <excludeFolder url="file://$MODULE_DIR$/aptos/target" />
+      <excludeFolder url="file://$MODULE_DIR$/ethereum/programs/committee-change/target" />
+      <excludeFolder url="file://$MODULE_DIR$/ethereum/programs/inclusion/target" />
+      <excludeFolder url="file://$MODULE_DIR$/ethereum/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
