@@ -32,7 +32,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2024-05-31
 
       - name: Install `tq-rs`
         run: cargo install tq-rs
@@ -77,20 +79,22 @@ jobs:
 
       - name: Update version in Cargo.toml
         run: |
-          members=$(tq workspace.members -f Cargo.toml | jq -r '.[]')
+          echo "Updating version in Cargo.toml..."
 
+          members=$(tq workspace.members -f Cargo.toml | jq -r '. += ["programs/inclusion", "programs/epoch-change"] | .[]')
+          
           bump_version() {
             cd "$1"
-            OLD_VERSION=$(grep -oP 'version = "\K[^"]+' Cargo.toml)
+            OLD_VERSION=$(grep -oP 'version = "\K[^"]+' Cargo.toml | head -n1)
             if [[ "${{ env.VERSION }}" > "$OLD_VERSION" ]]; then
               sed -i "s/version = \"$OLD_VERSION\"/version = \"${{ env.VERSION }}\"/" Cargo.toml
             else
               echo "New version is not greater than the current version for $1. Aborting..."
               exit 1
             fi
-            cd ${{ github.workspace }}
+            cd ${{ github.workspace }}/aptos
           }
-
+          
           while IFS= read -r path; do
             if [[ "$path" == *"/*" ]]; then
               for dir in "${path%/*}"/*; do
@@ -102,6 +106,7 @@ jobs:
               bump_version "$path"
             fi
           done <<< "$members"
+        working-directory: ${{ github.workspace }}/aptos
 
       - name: Commit changes
         run: |
@@ -114,7 +119,7 @@ jobs:
       - name: Create PR
         run: |
           cat << 'EOF' > body.md
-          This is an automated release PR for the patched version of `${{ env.VERSION }}`.
+          This is an automated release PR for version `${ env.VERSION }}`.
 
           On merge, this will trigger the [release publish workflow](${{ github.server_url }}/${{ github.repository }}/actions/workflows/tag-release.yml), which will upload a new GitHub release with tag `v${{ env.VERSION }}`.
 
