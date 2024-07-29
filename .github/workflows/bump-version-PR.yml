@@ -134,7 +134,7 @@ jobs:
       - name: Create PR
         run: |
           cat << 'EOF' > body.md
-          This is an automated release PR for version `${ env.VERSION }}` of the ${{ inputs.light-client }} light client.
+          This is an automated release PR for version `${{ env.VERSION }}` of the ${{ inputs.light-client }} light client.
 
           On merge, this will trigger the [release publish workflow](${{ github.server_url }}/${{ github.repository }}/actions/workflows/tag-release.yml), which will upload a new GitHub release with tag `${{ inputs.light-client }}-v${{ env.VERSION }}`.
 
