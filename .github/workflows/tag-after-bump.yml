@@ -48,6 +48,7 @@ jobs:
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v4
         with:
+          fromTag: ${{ github.event.pull_request.base.sha }}
           toTag: ${{ steps.get-version.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
