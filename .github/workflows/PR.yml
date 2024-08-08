@@ -1,0 +1,60 @@
+name: Rust
+
+on:
+  merge_group:
+  push:
+    branches:
+      - "dev"
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # Detect changes in each light client crate
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      # Expose matched filters as job 'packages' output variable
+      packages: ${{ steps.filter.outputs.changes }}
+      aptos: ${{ steps.filter.outputs.aptos }}
+      ethereum: ${{ steps.filter.outputs.ethereum }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            aptos:
+              - 'aptos/**'
+            ethereum:
+              - 'ethereum/**'
+
+  clippy:
+    needs: changes
+    runs-on: buildjet-16vcpu-ubuntu-2204
+    if: ${{ needs.changes.outputs.packages != '[]' && needs.changes.outputs.packages != '' }}
+    strategy:
+      matrix:
+        # Parse JSON array containing names of all changed light client packages
+        # e.g. ['aptos', 'ethereum'] if both directories contain changes
+        package: ${{ fromJSON(needs.changes.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: argumentcomputer/ci-workflows
+      - uses: ./.github/actions/ci-env
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.REPO_TOKEN }}
+      - name: Setup CI
+        uses: ./.github/actions/setup
+        with:
+          pull_token: ${{ secrets.REPO_TOKEN }}
+      # See '.cargo/config' for list of enabled/disabled clippy lints
+      - name: rustfmt
+        run: cargo fmt --all --check
+        working-directory: ${{ github.workspace }}/${{ matrix.package }}
