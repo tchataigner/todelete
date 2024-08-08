@@ -39,7 +39,7 @@ jobs:
           if [[ "${{ startsWith(github.event.pull_request.head.ref, 'release/') }}" == "true" ]]; then
             VERSION="${VERSION}.0"
           fi
-          
+
           git tag -a $VERSION -m "$VERSION" origin/$RELEASE_BRANCH
           git push origin $VERSION --follow-tags
           echo "version=$VERSION" | tee -a "$GITHUB_OUTPUT"
@@ -52,21 +52,21 @@ jobs:
           if [[ "${{ startsWith(github.event.pull_request.head.ref, 'release/') }}" == "true" ]]; then
             REGEX=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d'/' -f 2 | cut -d'.' -f 1)
             LATEST_RELEASE=$(gh release list --repo $GITHUB_REPOSITORY --limit 100 | grep -Ei "$REGEX" | head -n 1)
-          
+
             if [ -z "$LATEST_RELEASE" ]; then
               FIRST_COMMIT=$(git rev-list --max-parents=0 dev#refs/heads/)
-          
+
               echo "The first commit on branch dev is $FIRST_COMMIT"
               echo "latest_release=$FIRST_COMMIT" | tee -a "$GITHUB_OUTPUT"      
             else
               echo "Found release: $LATEST_RELEASE"
               echo "latest_release=$LATEST_RELEASE" | tee -a "$GITHUB_OUTPUT"      
             fi
-          
+
           else
             REGEX=$(echo "${{ github.event.pull_request.base.ref }}" | cut -d'/' -f 2)
             LATEST_RELEASE=$(gh release list --repo $GITHUB_REPOSITORY --limit 100 | grep -Ei "$REGEX" | head -n 1)
-          
+
             echo "Found release: $LATEST_RELEASE"
             echo "latest_release=$LATEST_RELEASE" | tee -a "$GITHUB_OUTPUT"
           fi
