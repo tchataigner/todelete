@@ -15,7 +15,16 @@ jobs:
       ((startsWith(github.event.pull_request.head.ref, 'release/') && github.event.pull_request.base.ref == 'dev') ||
       (startsWith(github.event.pull_request.head.ref, 'hotfix/') && startsWith(github.event.pull_request.base.ref, 'release/')))
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Verify git installation
+        run: git --version
+
       - name: Git config
         run: |
           git config --global user.name "github-actions[bot]"
@@ -23,11 +32,6 @@ jobs:
 
           git config --global url."https://${{ secrets.REPO_TOKEN }}@github.com/".insteadOf ssh://git@github.com
           git config --global url."https://${{ secrets.REPO_TOKEN }}@github.com".insteadOf https://github.com
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Get version
         id: get-version
