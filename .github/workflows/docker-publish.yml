@@ -54,7 +54,7 @@ jobs:
         id: docker_tagging
         run: |
           echo "Neither scheduled nor manual release from main branch. Just tagging as branch name"
-          echo "docker_tags=${{ env.REGISTRY }}/${{ inputs.light-client }}:${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+          echo "docker_tags=${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
       # Log docker metadata to explicitly know what is being pushed
       - name: Inspect Docker Metadata
         run: |
