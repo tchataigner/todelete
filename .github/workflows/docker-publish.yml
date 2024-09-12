@@ -58,6 +58,8 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
+          build-args: |
+            NAME=${{ inputs.light-client }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
